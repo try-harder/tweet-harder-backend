@@ -7,11 +7,11 @@ class StoreStub
   end
   
   def get_term(id)
-    @terms.invert[id]
+    @terms[id]
   end
   
   def get_id(term)
-    @terms[term]
+    @terms.invert[term]
   end
 
 end

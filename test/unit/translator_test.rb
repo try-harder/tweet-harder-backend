@@ -8,8 +8,8 @@ class TweetTest < MiniTest::Unit::TestCase
 
   def setup
     store = StoreStub.new({
-      "cat" => 333,
-      "dog" => 444
+      333 => "cat",
+      444 => "dog"
     })
     @translator = Translator.new(store)
   end

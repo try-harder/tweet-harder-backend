@@ -4,15 +4,13 @@ require 'sequel'
 
 class SequelStore
 
-  def initialize
-    db = Sequel.sqlite # memory database
+  def initialize(db=nil)
+    db ||= Sequel.sqlite # in-memory database
     db.create_table :terms do
       primary_key :id
       String :term, unique: true
     end
     @terms = db[:terms]
-    @terms.insert(id: 333, term: "cat")
-    @terms.insert(id: 444, term: "dog")
   end
 
   def get_term(id)
