@@ -16,7 +16,7 @@ class DBStoreTest < MiniTest::Unit::TestCase
     assert_equal "cat", @store.get_term(333)
   end
 
-  def test_get_term_fail
+  def test_get_missing_term
     refute_equal "cat", @store.get_term(444)
   end
 
@@ -28,10 +28,25 @@ class DBStoreTest < MiniTest::Unit::TestCase
     refute_equal 333, @store.get_id("dog")
   end
 
-  def test_get_id_creates_new_id
-    new_id = @store.get_id("mousey")
-    term = @store.get_term(new_id)
+  def test_get_missing_id_returns_nil
+    assert_nil @store.get_id("missing")
+  end
+
+  def test_get_missing_term_returns_nil
+    assert_nil @store.get_term(2048)
+  end
+
+  def test_add_term
+    id = @store.add_term("mousey")
+    term = @store.get_term(id)
     assert_equal "mousey", term
+  end
+
+  def test_add_existing_term_raises
+    assert_raises(Sequel::DatabaseError) do
+      @store.add_term("mousey")
+      @store.add_term("mousey")
+    end
   end
 
 end
