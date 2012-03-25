@@ -9,7 +9,8 @@ class Translator
   end
 
   def encode(term)
-    "" << @store.get_id(term)
+    id = @store.get_id(term) || @store.add_term(term)
+    "" << id
   end
 
   def encode_all(terms)
@@ -21,7 +22,7 @@ class Translator
   end
 
   def decode_all(chars)
-    (chars.split("").map {|char| decode(char)}).join(" ")
+    (chars.split("").map {|char| decode(char)}).join(" ").strip
   end
 
 end

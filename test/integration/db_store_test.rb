@@ -1,10 +1,5 @@
-# encoding: UTF-8
-
 require 'minitest/autorun'
-require '../../lib/sequel_store'
-
-
-Encoding.default_external = Encoding::UTF_8 if defined? Encoding
+require_relative '../../lib/sequel_store'
 
 class DBStoreTest < MiniTest::Unit::TestCase
 

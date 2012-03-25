@@ -1,47 +1,52 @@
 # encoding: UTF-8
-require 'minitest/autorun'
-require '../../lib/translator'
-require '../../lib/sequel_store'
 
-Encoding.default_external = Encoding::UTF_8 if defined? Encoding
+require 'minitest/autorun'
+require_relative '../../lib/translator'
+require_relative '../../lib/sequel_store'
 
 class TweetTest < MiniTest::Unit::TestCase
 
   def setup
-    store = SequelStore.new
-    @translator = Translator.new(store)
+    @store = SequelStore.new
+    @translator = Translator.new(@store)
   end
 
-  def test_encode_word
-    assert_equal "ō", @translator.encode("cat")
+  def test_encode_unknown_term
+    refute_nil @translator.encode("cat")
   end
 
-  def test_encode_word_fail
-    refute_equal "ō", @translator.encode("dog")
+  def test_encode_known_term
+    char = "" << @store.add_term("dog")
+    assert_equal char, @translator.encode("dog")
   end
 
-  def test_decode_word
-    assert_equal "cat", @translator.decode("ō")
+  def test_decode_unknown_term
+    assert_nil @translator.decode("ō")
   end
   
-  def test_decode_word_fail
-    refute_equal "cat", @translator.decode("Ƽ")
+  def test_decode_known_term
+    char = "" << @store.add_term("cat")
+    assert_equal "cat", @translator.decode(char)
   end
 
-  def test_encode_words
-    assert_equal "ōƼ", @translator.encode_all("cat dog")
+  def test_encode_unknown_terms
+    refute_nil @translator.encode_all("cat dog")
   end
 
-  def test_encode_words_fail
-    refute_equal "ōƼ", @translator.encode_all("dog cat")
+  def test_encode_known_terms
+    char1 = "" << @store.add_term("dog")
+    char2 = "" << @store.add_term("cat")
+    assert_equal char1 + char2, @translator.encode_all("dog cat")
   end
 
-  def test_decode_words
-    assert_equal "cat dog", @translator.decode_all("ōƼ")
+  def test_decode_unknown_terms
+    assert_empty @translator.decode_all("ōƼ")
   end
 
-  def test_decode_words_fail
-    refute_equal "cat dog", @translator.decode_all("Ƽō")
+  def test_decode_known_terms
+    char1 = "" << @store.add_term("dog")
+    char2 = "" << @store.add_term("cat")
+    assert_equal "dog cat", @translator.decode_all(char1 + char2)
   end
 
 end

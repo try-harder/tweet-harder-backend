@@ -1,11 +1,11 @@
-# encoding: UTF-8
-
 require 'sequel'
+
+Encoding.default_external = Encoding::UTF_8 if defined? Encoding
 
 class SequelStore
 
   def initialize(db=nil)
-    db ||= Sequel.sqlite # in-memory database
+    db ||= Sequel.sqlite # default to sqlite3 in-memory database
     db.create_table :terms do
       primary_key :id
       String :term, unique: true
